@@ -23,5 +23,6 @@ void Vip_list_print(Vip* start);
 Vip* Vip_n_get(Vip* start,int n);
 Vip* Vip_copy(Vip* ori);
 Vip* Vip_list_copy(Vip* ori);
-//void Vip_list_saveload(Vip*start,char*name,int flag);
+Vip* Vip_list_cut(Vip* ori,int i,int j);
+Vip* Vip_list_saveload(Vip*start,char*name);
 #endif

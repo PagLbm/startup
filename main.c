@@ -2,33 +2,48 @@
 #include "vip.h"
 #include "record.h"
 #include "fun.h"
+#define FIRST_START 0
 int main(){
-	Vip* vip_list=Vip_init();
-	Record* record_list=Record_init();
-	Goods* goods_list=Goods_init();
-
-	Vip_add1(vip_list,"name_abc","ph_2834932874");
-	Vip_add1(vip_list,"name_dds","ph_2349892618");
-	Vip_add1(vip_list,"name_sid","ph_8274755773");
-	Vip_add1(vip_list,"name_idd","ph_8923745324");
-	Vip_add1(vip_list,"name_ddd","ph_8234558293");
+	Vip* vip_list;
+	Record* record_list;
+	Goods* goods_list;
+	if(FIRST_START){
+		vip_list=Vip_init();
+		record_list=Record_init();
+		goods_list=Goods_init();
+		
+		Vip_add1(vip_list,"name_abc","ph_2834932874");
+		Vip_add1(vip_list,"name_dds","ph_2349892618");
+		Vip_add1(vip_list,"name_sid","ph_8274755773");
+		Vip_add1(vip_list,"name_idd","ph_8923745324");
+		Vip_add1(vip_list,"name_ddd","ph_8234558293");
+		Vip_list_saveload(vip_list,"vip.s");
+		
+		Goods_add1(goods_list,"gname_8293",38);
+		Goods_add1(goods_list,"gname_8223",138);
+		Goods_add1(goods_list,"gname_8228",448);
+		Goods_add1(goods_list,"gname_8229",238);
+		Goods_add1(goods_list,"gname_7293",388);
+		Goods_add1(goods_list,"gname_6293",32);
+		Goods_add1(goods_list,"gname_9293",65);
+		Goods_add1(goods_list,"gname_1293",99);
+		Goods_add1(goods_list,"gname_2293",319);
+		Goods_list_saveload(goods_list,"goods.s");
+	}
+	else{
+		vip_list=Vip_list_saveload(NULL,"vip.s");
+		record_list=Record_list_saveload(NULL,"record.s");
+		goods_list=Goods_list_saveload(NULL,"goods.s");
+	}
+	
 	Vip_list_print(vip_list);
-
-	Goods_add1(goods_list,"gname_8293",38);
-	Goods_add1(goods_list,"gname_8223",138);
-	Goods_add1(goods_list,"gname_8228",448);
-	Goods_add1(goods_list,"gname_8229",238);
-	Goods_add1(goods_list,"gname_7293",388);
-	Goods_add1(goods_list,"gname_6293",32);
-	Goods_add1(goods_list,"gname_9293",65);
-	Goods_add1(goods_list,"gname_1293",99);
-	Goods_add1(goods_list,"gname_2293",319);
 	Goods_list_print(goods_list);
 
 	int ch;
 	while((ch=getchar())!='#')
 		random_consume(record_list,vip_list,goods_list);
 	Record_list_print(record_list);
+	Record_list_saveload(record_list,"record.s");
 
 	vip_record_print(record_list,Vip_n_get(vip_list,4));
 	goods_record_print(record_list,Goods_n_get(goods_list,5));

@@ -16,6 +16,8 @@ void Goods_print(Goods*node);
 void Goods_list_print(Goods*list);
 Goods* Goods_copy(Goods*ori);
 Goods* Goods_list_copy(Goods*start);
+Goods* Goods_list_cut(Goods*ori,int i,int j);
 Goods* Goods_n_get(Goods*start,int n);
 int Goods_len(Goods*start,int flag);
+Goods* Goods_list_saveload(Goods*start,char*name);
 #endif

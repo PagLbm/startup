@@ -39,9 +39,13 @@ void Record_add2(Record* start,Record* node){
 	(p->next)->next=NULL;
 }
 void Record_print(Record*p){
+	if(p==NULL)
+		return;
 	printf("time:%ld, vip_id:%5d, goods_id:%5d, money:%d\n",p->time1,p->vip_id,p->goods_id,p->money);
 }
 void Record_list_print(Record*start){
+	if(start==NULL)
+		return;
 	Record*p=start;
 	printf("#Record list print\n");
 	while(p->next!=NULL){
@@ -50,6 +54,8 @@ void Record_list_print(Record*start){
 	}
 }
 void Record_destroy(Record*start){
+	if(start==NULL)
+		return;
 	Record *p1,*p2;
 	p1=start;
 	do{
@@ -60,6 +66,8 @@ void Record_destroy(Record*start){
 	printf("#Record list destroy succ\n");
 }
 Record* Record_copy(Record*ori){
+	if(ori==NULL)
+		return NULL;
 	Record*bak=malloc(sizeof(Record));
 	if(bak==NULL){
 		exit(0);
@@ -72,6 +80,8 @@ Record* Record_copy(Record*ori){
 	return bak;
 }
 Record* Record_list_copy(Record*ori){
+	if(ori==NULL)
+		return NULL;
 	Record* new_list=Record_copy(ori);
 	new_list->next=NULL;
 	Record*point=ori;
@@ -82,6 +92,38 @@ Record* Record_list_copy(Record*ori){
 		Record_add2(new_list,temp);
 	}
 	printf("#record list copy\n");
+	return new_list;
+}
+int Record_len(Record*start){
+	Record* p=start;
+	int len=0;
+	while(p->next!=NULL){
+		p=p->next;
+		len++;
+	}
+	return len;
+}
+Record* Record_list_cut(Record*ori,int i,int j){
+	int record_len=Record_len(ori);
+	if(i<1||i>record_len||j<i)
+		return NULL;
+	Record* new_list=Record_init();
+	Record *p1,*p2,*p3,*p4;
+	p1=p3=ori;
+	p2=p4=ori->next;
+	for(int x=1;x<i;x++){
+		p1=p1->next;
+		p2=p2->next;
+	}
+	for(int x=0;x<j;x++){
+		if(p4==NULL)
+			break;
+		p3=p3->next;
+		p4=p4->next;
+	}
+	new_list->next=p2;
+	p3->next=NULL;
+	p1->next=p4;
 	return new_list;
 }
 Record* Record_sub_vip(Record*start,int id){
@@ -147,4 +189,48 @@ Record* Record_list_combine(Record* list1, Record* list2){
 	}
 	return new_list;
 }
+Record* Record_list_saveload(Record*start,char*name){
+	FILE*fp;
+	if(start!=NULL){
+		fp=fopen(name,"w");
+		if(fp==NULL){
+			printf("#Record list save error\n");
+			exit(0);
+		}
+		int len=1+Record_len(start);
+		fprintf(fp,"%d\n",len);
+		Record*p=start;
+		for(int i=0;i<len;i++){
+			fwrite(p,sizeof(Record),1,fp);
+			p=p->next;
+		}
+		fclose(fp);
+		return start;
+	}
+	else{
+		fp=fopen(name,"r");
+		if(fp==NULL){
+			printf("#record list load error\n");
+			exit(0);
+		}
+		Record* new_list=malloc(sizeof(Record));
+		int len;
+		fscanf(fp,"%d\n",&len);
+		fread(new_list,sizeof(Record),1,fp);
+		new_list->next=NULL;
+		Record*node;
+		for(int i=1;i<len;i++){
+			node=malloc(sizeof(Record));
+			if(node==NULL){
+				exit(0);
+			}
+			fread(node,sizeof(Record),1,fp);
+			Record_add2(new_list,node);
+		}
+		fclose(fp);
+		return new_list;
+	}
+	return NULL;
+}
+
 

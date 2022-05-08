@@ -57,9 +57,12 @@ void Vip_add2(Vip* start,Vip* node){
 		p=p->next;
 	p->next=node;
 	(p->next)->next=NULL;
+	start->id++;
 }
 //vip链表的销毁
 void Vip_destroy(Vip*start){
+	if(start==NULL)
+		return;
 	Vip *p1,*p2;
 	p1=start;
 	do{
@@ -70,10 +73,14 @@ void Vip_destroy(Vip*start){
 	printf("#Vip list destroy succ\n");
 }
 void Vip_print(Vip*node){
+	if(node==NULL)
+		return;
 	printf("id %d, name %s, now %d, phone_number %s\n",node->id,node->name,node->now,node->phone_number);
 }
 //打印全部vip信息
 void Vip_list_print(Vip*start){
+	if(start==NULL)
+		return;
 	printf("#Vip list print\n");
 	Vip*p=start;
 	while(p->next!=NULL){
@@ -115,29 +122,78 @@ Vip* Vip_list_copy(Vip* ori){
 		temp_node=Vip_copy(point);
 		Vip_add2(new_list,temp_node);
 	}
+	Vip_len(new_list,1);
 	printf("#vip list copy\n");
 	return new_list;
 }
-/*int Vip_list_saveload(Vip*start,char*name,int flag){
+Vip* Vip_list_cut(Vip* ori,int i,int j){
+	int vip_len=Vip_len(ori,1);
+	if(i<1||i>vip_len||j<i)
+		return NULL;
+	Vip* new_list=Vip_init();
+	Vip *p1,*p2,*p3,*p4;
+	p1=p3=ori;
+	p2=p4=ori->next;
+	for(int x=1;x<i;x++){
+		p1=p1->next;
+		p2=p2->next;
+	}
+	for(int x=0;x<j;x++){
+		if(p4==NULL)
+			break;
+		p3=p3->next;
+		p4=p4->next;
+	}
+	new_list->next=p2;
+	p3->next=NULL;
+	p1->next=p4;
+	Vip_len(ori,1);
+	Vip_len(new_list,1);
+	return new_list;
+}
+Vip* Vip_list_saveload(Vip*start,char*name){
 	FILE*fp;
-	Vip*p=start;
-	if(flag==0){
+	if(start!=NULL){
 		fp=fopen(name,"w");
 		if(fp==NULL){
 			printf("#vip list save error\n");
 			exit(0);
 		}
-		fprintf(fp,"#start\n");
-		while(p->next!=NULL){
+		int len=1+Vip_len(start,1);
+		fprintf(fp,"%d\n",len);
+		Vip*p=start;
+		for(int i=0;i<len;i++){
+			fwrite(p,sizeof(Vip),1,fp);
 			p=p->next;
-			fprintf(fp,"#vip\n");
+		}
+		fclose(fp);
+		return start;
 	}
-	fp=fopen(name,"r");
-	if(fp==NULL){
-		printf("#vip list load error\n");
-		return 1;
+	else{
+		fp=fopen(name,"r");
+		if(fp==NULL){
+			printf("#vip list load error\n");
+			exit(0);
+		}
+		Vip* new_list=malloc(sizeof(Vip));
+		int len;
+		fscanf(fp,"%d\n",&len);
+		fread(new_list,sizeof(Vip),1,fp);
+		new_list->next=NULL;
+		Vip*node;
+		for(int i=1;i<len;i++){
+			node=malloc(sizeof(Vip));
+			if(node==NULL){
+				exit(0);
+			}
+			fread(node,sizeof(Vip),1,fp);
+			Vip_add2(new_list,node);
+		}
+		fclose(fp);
+		return new_list;
 	}
-*/
+	return NULL;
+}
 
 
 

@@ -16,12 +16,15 @@ void Record_add2(Record* start,Record* node);
 void Record_print(Record*node);
 void Record_list_print(Record*start);
 void Record_destroy(Record*start);
+int Record_len(Record*start);
 Record* Record_copy(Record*ori);
 Record* Record_list_copy(Record*ori);
+Record* Record_list_cut(Record*ori,int i,int j);
 Record* Record_sub_vip(Record*start,int id);
 Record* Record_sub_goods(Record*start,int id);
 Record* Record_sub_price(Record*start,int min,int max);
 Record* Record_sub_time(Record*start,time_t min,time_t max);
 long Record_addtotal_price(Record*start);
 Record* Record_list_combine(Record* list1, Record* list2);
+Record* Record_list_saveload(Record*start,char*name);
 #endif
